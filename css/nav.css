@@ -1,0 +1,78 @@
+.nav {
+  overflow: hidden;
+  position: fixed;
+  display: block;
+  width: 170px;
+  border-right: black solid 0.7px;
+}
+.nav button {
+  border: 0;
+  background-color: unset;
+  align-items: center;
+  display: block;
+  align-self: center;
+  align-content: center;
+  padding-left: 55px;
+  padding-bottom: 30px;
+}
+.nav button:hover {
+  cursor: pointer;
+  animation-delay: 1s;
+}
+
+.nav a {
+  display: block;
+  text-decoration: none;
+  font-weight: 700;
+  color: black;
+  text-align: center;
+  align-content: center;
+  font-size: 22px;
+  transform-origin: 0 50%;
+  padding-bottom: 10px;
+  position: relative;
+}
+.nav a::before {
+  content: "";
+  width: 100%;
+  height: 4px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: 0.5s transform ease;
+  transform: scale3d(0, 1, 1);
+  transform-origin: 0 50%;
+}
+
+.nav a:hover::before{
+  transform: scale3d(1,1,1);
+}
+.nav a::before{
+  transform-origin: 50% 50%;
+  background: green;
+}
+.nav a:hover {
+  cursor: pointer;
+}
+.nav_menu {
+  display: none;
+}
+.nav_fruit {
+  overflow: hidden;
+}
+.nav_fruitmenu {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+.nav_fruitmenu a {
+  display: block;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+}
+.nav_fruit:hover .nav_fruitmenu {
+  display: block;
+  pointer-events: fill;
+}
+
