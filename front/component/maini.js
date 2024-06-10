@@ -17,7 +17,7 @@ function clearCart() {
 }
 
 // 카트에 아이템을 추가하는 함수
-function addIToCart(item) {
+function addToCart(item) {
   cartList.push(item);
   const cartItem = document.createElement("div");
   cartItem.innerHTML = `
@@ -43,16 +43,16 @@ function removeFromCart(button) {
 }
 
 function showImport(data) {
-  if (!maindcontainer) {
-    console.error("maindcontainer element not found");
+  if (!mainicontainer) {
+    console.error("mainicontainer element not found");
     return;
   }
 
-  var startDIndex = (currentDPage - 1) * itemsPerPage;
-  var endDIndex = Math.min(startDIndex + itemsPerPage, data.length);
-  maindcontainer.innerHTML = "";
+  var startIIndex = (currentIPage - 1) * itemsPerPage;
+  var endIIndex = Math.min(startIIndex + itemsPerPage, data.length);
+  mainicontainer.innerHTML = "";
 
-  for (var i = startDIndex; i < endDIndex; i++) {
+  for (var i = startIIndex; i < endIIndex; i++) {
     const item = data[i];  // Use a local variable to store the current item
     var div = document.createElement("div");
     div.className = "item";
@@ -99,7 +99,7 @@ function showImport(data) {
 
     cartButton.appendChild(cartImg);
     cartButton.onclick = () => {
-      addToCart(item);
+      addToCart(data[i]);
     };
 
     cartDiv.appendChild(cartButton);
