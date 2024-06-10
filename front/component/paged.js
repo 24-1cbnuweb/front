@@ -258,16 +258,21 @@ function loadlowpJSON(callback) {
 }
 
 function loadhighpJSON(callback) {
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
   $.getJSON(Dpath, function (highpdata) {
-    // price를 숫자로 변환하여 내림차순으로 정렬
+    // Filter the data to only include items where `incategory` matches the search input
+    if (searchInput) {
+      highpdata = highpdata.filter(item => item.incategory.toLowerCase() === searchInput);
+    }
+
+    // Price를 숫자로 변환하여 오름차순으로 정렬
     highpdata.sort(function (a, b) {
       var priceA = parseInt(a.price.replace(/[^0-9]/g, ""), 10);
       var priceB = parseInt(b.price.replace(/[^0-9]/g, ""), 10);
-
-      return priceB - priceA;
+      return priceA - priceB;
     });
 
-    // 가격이 1,000,000 이상인 항목은 제거
     highpdata = highpdata.filter(function (item) {
       var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
       return price < 1000000 && price > 1000;
@@ -279,11 +284,21 @@ function loadhighpJSON(callback) {
 
 function loadhighdcJSON(callback) {
   $.getJSON(Dpath, function (highdcdata) {
+    const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
+    if (searchInput) {
+      highdcdata = highdcdata.filter(item => item.incategory.toLowerCase() === searchInput);
+    }
+
     // Convert discount to a number and sort in descending order
     highdcdata.sort(function (a, b) {
       var discountA = parseInt(a.discount.replace(/[^0-9]/g, ""), 10);
       var discountB = parseInt(b.discount.replace(/[^0-9]/g, ""), 10);
       return discountB - discountA;
+    });
+    highdcdata = highdcdata.filter(function (item) {
+      var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
+      return price < 1000000 && price > 1000;
     });
     callback(highdcdata);
   });
