@@ -75,8 +75,8 @@ function showPFrozen(data) {
     divItem.className = "item";
 
     const itemName =
-      data[i].name.length > 30
-        ? data[i].name.substring(0, 30) + "..."
+      data[i].name.length > 25
+        ? data[i].name.substring(0, 25) + "..."
         : data[i].name;
 
     const contentDiv = document.createElement("div");
@@ -176,7 +176,7 @@ function loadselectJSON(callback) {
 
   $.getJSON(Fpath, function (data) {
     // Filter the data to only include items where `incategory` matches the search input
-    const selecteddata = data.filter(item => item.incategory.toLowerCase() === searchInput);
+    const selecteddata = data.filter(item => item.name.toLowerCase().includes(searchInput));
     callback(selecteddata); // Call the callback with the filtered data
   });
 }
