@@ -38,3 +38,4 @@ $(window).scroll(function() {
     event.target.style.transition = "all 0.5s";
   }
 
+

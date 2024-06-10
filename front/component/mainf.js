@@ -16,7 +16,7 @@ function clearCart() {
 }
 
 // 카트에 아이템을 추가하는 함수
-function addToCart(item) {
+function addFToCart(item) {
   cartList.push(item);
   const cartItem = document.createElement("div");
   cartItem.innerHTML = `
@@ -42,26 +42,30 @@ function removeFromCart(button) {
 }
 
 function showFrozen(data) {
-  var startFIndex = (currentFPage - 1) * itemsPerPage;
-  var endFIndex = Math.min(startFIndex + itemsPerPage, data.length);
-  mainfcontainer.innerHTML = "";
+  if (!maindcontainer) {
+    console.error("maindcontainer element not found");
+    return;
+  }
 
-  for (var i = startFIndex; i < endFIndex; i++) {
-    (function(item) {
-    var item = data[i]; // item을 데이터 배열의 현재 항목으로 설정
+  var startDIndex = (currentDPage - 1) * itemsPerPage;
+  var endDIndex = Math.min(startDIndex + itemsPerPage, data.length);
+  maindcontainer.innerHTML = "";
+
+  for (var i = startDIndex; i < endDIndex; i++) {
+    const item = data[i];  // Use a local variable to store the current item
     var div = document.createElement("div");
     div.className = "item";
-
+    const itemName = item.name.length > 30 ? item.name.substring(0, 30) + "..." : item.name;
     var contentDiv = document.createElement("div");
     contentDiv.className = "item-content";
     contentDiv.innerHTML = `
-        <img src="${item.img}" class="img">
-        <h3>${item.name}</h3>
-        <a><del>${item.preprice}</del></a>
-        <p style="color:orange; display:inline">${item.discount}</p> 
-        <p class="price">${item.price}</p>
-        <a>(${item.perprice}/100g)</a>
-      `;
+      <img src="${item.img}" class="img">
+      <h3>${itemName}</h3>
+      <a><del>${item.preprice}</del></a>
+      <p style="color:orange; display:inline">${item.discount}</p> 
+      <p class="price">${item.price}</p>
+      <a>(${item.perprice}/100g)</a>
+    `;
 
     const linkDiv = document.createElement("div");
     linkDiv.className = "link-div";
@@ -103,8 +107,9 @@ function showFrozen(data) {
     div.appendChild(linkDiv);
     div.appendChild(cartDiv);
     mainfcontainer.appendChild(div);
-  })(data[i]);}
+  }
 }
+
 
 function loadFJSON(callback) {
   $.getJSON(mainFpath, function (data) {

@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Falling fruits
     const container = document.querySelector('.about');
     const fruitImages = [
-      'css/images/사과.png', 'css/images/한라봉.png', 'images/귤.png', 'images/배.png',
+      'images/사과.png', 'images/한라봉.png', 'images/귤.png', 'images/배.png',
       'images/포도.png', 'images/파인애플.png', 'images/토마토.png', 'images/키위.png',
       'images/코코넛.png', 'images/체리.png', 'images/참외.png', 'images/자몽.png',
       'images/자두.png', 'images/유자.png', 'images/용과.png', 'images/오미자.png',
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
   
     function createFruit() {
       const fruit = document.createElement('img');
-      fruit.src = `../front/css/${getRandomFruit()}`;
+      fruit.src = `../css/${getRandomFruit()}`;
       fruit.classList.add('fruit');
       fruit.style.position = 'absolute';
       fruit.style.width = '50px'; 

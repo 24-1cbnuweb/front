@@ -3,6 +3,7 @@ var mainIpath = "component/import.json";
 var itemsPerPage = 4;
 var currentIPage = 1;
 
+
 // Clear Cart 함수
 function clearCart() {
   // 카트 리스트 초기화
@@ -16,7 +17,7 @@ function clearCart() {
 }
 
 // 카트에 아이템을 추가하는 함수
-function addToCart(item) {
+function addIToCart(item) {
   cartList.push(item);
   const cartItem = document.createElement("div");
   cartItem.innerHTML = `
@@ -42,69 +43,74 @@ function removeFromCart(button) {
 }
 
 function showImport(data) {
-  var startIIndex = (currentIPage - 1) * itemsPerPage;
-  var endIIndex = Math.min(startIIndex + itemsPerPage, data.length);
-  mainicontainer.innerHTML = "";
+  if (!maindcontainer) {
+    console.error("maindcontainer element not found");
+    return;
+  }
 
-  for (var i = startIIndex; i < endIIndex; i++) {
-    (function(item) {
-      var div = document.createElement("div");
-      div.className = "item";
+  var startDIndex = (currentDPage - 1) * itemsPerPage;
+  var endDIndex = Math.min(startDIndex + itemsPerPage, data.length);
+  maindcontainer.innerHTML = "";
 
-      var contentDiv = document.createElement("div");
-      contentDiv.className = "item-content";
-      contentDiv.innerHTML = `
-          <img src="${item.img}" class="img">
-          <h3>${item.name}</h3>
-          <a><del>${item.preprice}</del></a>
-          <p style="color:orange; display:inline">${item.discount}</p> 
-          <p class="price">${item.price}</p>
-          <a>(${item.perprice}/100g)</a>
-        `;
+  for (var i = startDIndex; i < endDIndex; i++) {
+    const item = data[i];  // Use a local variable to store the current item
+    var div = document.createElement("div");
+    div.className = "item";
+    const itemName = item.name.length > 30 ? item.name.substring(0, 30) + "..." : item.name;
+    var contentDiv = document.createElement("div");
+    contentDiv.className = "item-content";
+    contentDiv.innerHTML = `
+      <img src="${item.img}" class="img">
+      <h3>${itemName}</h3>
+      <a><del>${item.preprice}</del></a>
+      <p style="color:orange; display:inline">${item.discount}</p> 
+      <p class="price">${item.price}</p>
+      <a>(${item.perprice}/100g)</a>
+    `;
 
-      const linkDiv = document.createElement("div");
-      linkDiv.className = "link-div";
+    const linkDiv = document.createElement("div");
+    linkDiv.className = "link-div";
 
-      const linkButton = document.createElement("button");
-      linkButton.className = "link-button";
+    const linkButton = document.createElement("button");
+    linkButton.className = "link-button";
 
-      const linkImg = document.createElement("img");
-      linkImg.src = "./css/link.png";
-      linkImg.alt = "link";
-      linkImg.className = "link-img";
+    const linkImg = document.createElement("img");
+    linkImg.src = "./css/link.png";
+    linkImg.alt = "link";
+    linkImg.className = "link-img";
 
-      linkButton.appendChild(linkImg);
-      linkButton.onclick = () => {
-        window.open(item.url, "_blank");
-      };
+    linkButton.appendChild(linkImg);
+    linkButton.onclick = () => {
+      window.open(item.url, "_blank");
+    };
 
-      linkDiv.appendChild(linkButton);
+    linkDiv.appendChild(linkButton);
 
-      const cartDiv = document.createElement("div");
-      cartDiv.className = "cart-div";
+    const cartDiv = document.createElement("div");
+    cartDiv.className = "cart-div";
 
-      const cartButton = document.createElement("button");
-      cartButton.className = "cart-button";
+    const cartButton = document.createElement("button");
+    cartButton.className = "cart-button";
 
-      const cartImg = document.createElement("img");
-      cartImg.src = "css/blackheart.png";
-      cartImg.alt = "cart";
-      cartImg.className = "cart-img";
+    const cartImg = document.createElement("img");
+    cartImg.src = "css/blackheart.png";
+    cartImg.alt = "cart";
+    cartImg.className = "cart-img";
 
-      cartButton.appendChild(cartImg);
-      cartButton.onclick = () => {
-        addToCart(item);
-      };
+    cartButton.appendChild(cartImg);
+    cartButton.onclick = () => {
+      addToCart(item);
+    };
 
-      cartDiv.appendChild(cartButton);
+    cartDiv.appendChild(cartButton);
 
-      div.appendChild(contentDiv);
-      div.appendChild(linkDiv);
-      div.appendChild(cartDiv);
-      mainicontainer.appendChild(div);
-    })(data[i]); // Immediately Invoked Function Expression (IIFE)
+    div.appendChild(contentDiv);
+    div.appendChild(linkDiv);
+    div.appendChild(cartDiv);
+    mainicontainer.appendChild(div);
   }
 }
+
 
 function loadIJSON(callback) {
   $.getJSON(mainIpath, function (data) {
