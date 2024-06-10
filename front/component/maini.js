@@ -99,7 +99,7 @@ function showImport(data) {
 
     cartButton.appendChild(cartImg);
     cartButton.onclick = () => {
-      addToCart(data[i]);
+      addToCart(item);
     };
 
     cartDiv.appendChild(cartButton);
