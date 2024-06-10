@@ -21,7 +21,8 @@ body {
   margin-right: 200px; /* .right 요소의 너비 만큼 여백을 줍니다. */
   margin-left: 200px;
   text-align: center;
-  font-size: 40px;
+  margin-bottom: 0;
+  font-size: 70px;
   font-weight: bold;
   font-family: "Gochi Hand", cursive;
 }
@@ -33,25 +34,11 @@ body {
   color: #4bc7f4;
   font-family: "Acme", sans-serif;
 }
-.main_search {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: max-content;
-}
-.searchbar {
-  width: 550px;
-  height: 40px;
-  font-size: 26px;
-  padding-left: 20px;
-  padding-right: 20px;
-  font-family: "Gowun Dodum";
-}
+
 .maintext {
   text-align: center;
   justify-content: center;
   font-size: 25px;
-  padding-top: 50px;
   font-weight: 200;
   margin-right: 200px; /* .right 요소의 너비 만큼 여백을 줍니다. */
   margin-left: 200px;
