@@ -136,9 +136,10 @@ function showPFrozen(data) {
 function loadMoreItems() {
   // 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
   loading_page.style.display = "block";
-  // 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
-  currentFPage += 1;
-  
+
+  // 다음 페이지로 넘어갈 때마다 currentDPage 값을 증가시킵니다.
+  currentFpage +=1;
+
   const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
   const hasSearchInput = searchInput.length > 0;
 
@@ -171,16 +172,15 @@ window.addEventListener("scroll", () => {
 });
 
 function loadselectJSON(callback) {
-  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
 
   $.getJSON(Fpath, function (data) {
     // Filter the data to only include items where `incategory` matches the search input
-    const selecteddata = data.filter(
-      (item) => item.name.toLowerCase().includes(searchInput)
-    );
+    const selecteddata = data.filter(item => item.incategory.toLowerCase() === searchInput);
     callback(selecteddata); // Call the callback with the filtered data
   });
 }
+
 
 function selectshow() {
   if (dataloaded) {
@@ -310,6 +310,9 @@ function loadhighdcJSON(callback) {
 }
 
 function show() {
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+  searchInput.value="";
+  currentFpage = 1;
   if (dataloaded) {
     dataloaded = false;
     loading_page.style.display = "block"; // 로딩 화면 표시

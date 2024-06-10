@@ -313,6 +313,9 @@ function loadhighdcJSON(callback) {
 }
 
 function show() {
+  
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+  searchInput.value="";
   if (dataloaded) {
     dataloaded = false;
     loading_page.style.display = "block"; // 로딩 화면 표시
