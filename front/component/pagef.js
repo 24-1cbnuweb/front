@@ -1,27 +1,27 @@
 // 초기화
-const ipcontainer = document.getElementById("FpageContainer");
-const Ipath = "component/frozen.json";
+const fpcontainer = document.getElementById("FpageContainer");
+const Fpath = "component/frozen.json";
 const itemsPerRow = 4;
 const totalItems = 100; // 스크롤로 추가되는 아이템
-let currentIpage = 1;
+let currentFpage = 1;
 const itemsToShow = 40; // 한 번에 보여줄 아이템 수
 let dataloaded = false;
 let currentSort = ""; // 현재 정렬 상태 저장
 let cartList = [];
 
 const loading_page = document.getElementById("load");
-loading_page.style.display = 'none';
+loading_page.style.display = "none";
 
 // Clear Cart 함수
 function clearCart() {
   // 카트 리스트 초기화
   cartList = [];
-  
+
   // 카트 UI의 아이템 요소들을 모두 삭제합니다.
   const cartDiv = document.getElementById("cart");
-  cartDiv.innerHTML = `<div style="height: 30px;"><img src="css/heart.gif" style="height: 50px; "></div>
+  cartDiv.innerHTML = `<div style="height: 30px;"><img src="css/heart.gif" style="height: 30px;"></div>
   <!-- 초기화 버튼 -->
-  <button class="priceselect" onclick="clearCart()" style="text-decoration: underline; ">Clear Cart</button>`; // 카트 내용을 비웁니다.
+  <button class="priceselect" onclick="clearCart()" style="text-decoration: underline;">Clear Cart</button>`; // 카트 내용을 비웁니다.
 }
 
 // 카트에 아이템을 추가하는 함수
@@ -37,39 +37,47 @@ function addToCart(item) {
     </div>
     <button class="priceselect" onclick="removeFromCart(this)" style="text-decoration: underline;">Remove</button>
   `;
-  
+
   document.getElementById("cart").appendChild(cartItem);
 }
 
 // 카트에서 아이템을 제거하는 함수
 function removeFromCart(button) {
   const itemToRemove = button.parentNode;
-  const index = Array.from(document.getElementById("cart").children).indexOf(itemToRemove);
+  const index = Array.from(document.getElementById("cart").children).indexOf(
+    itemToRemove
+  );
   cartList.splice(index - 1, 1); // Adjust for the initial div element
-  
+
   itemToRemove.parentNode.removeChild(itemToRemove);
 }
 
 // 제품 목록을 화면에 표시하는 함수
-function showPImport(data) {
-
-  const startDIndex = (currentIpage - 1) * totalItems;
+function showPFrozen(data) {
+  const startDIndex = (currentFpage - 1) * totalItems;
   const endDIndex = Math.min(startDIndex + totalItems, data.length);
 
   let divRow;
-  for (let i = startDIndex; i < Math.min(startDIndex + itemsToShow, endDIndex); i++) {
+  for (
+    let i = startDIndex;
+    i < Math.min(startDIndex + itemsToShow, endDIndex);
+    i++
+  ) {
     const itemIndexInRow = (i - startDIndex) % itemsPerRow;
 
     if (itemIndexInRow === 0) {
       divRow = document.createElement("div");
       divRow.className = "row";
-      ipcontainer.appendChild(divRow);
+      fpcontainer.appendChild(divRow);
     }
 
     const divItem = document.createElement("div");
     divItem.className = "item";
 
-    const itemName = data[i].name.length > 30 ? data[i].name.substring(0, 30) + "..." : data[i].name;
+    const itemName =
+      data[i].name.length > 30
+        ? data[i].name.substring(0, 30) + "..."
+        : data[i].name;
 
     const contentDiv = document.createElement("div");
     contentDiv.className = "item-content";
@@ -95,7 +103,7 @@ function showPImport(data) {
 
     linkButton.appendChild(linkImg);
     linkButton.onclick = () => {
-      window.open(data[i].url, '_blank');
+      window.open(data[i].url, "_blank");
     };
 
     linkDiv.appendChild(linkButton);
@@ -113,9 +121,8 @@ function showPImport(data) {
 
     cartButton.appendChild(cartImg);
     cartButton.onclick = () => {
-        addToCart(data[i]);
-      };
-    
+      addToCart(data[i]);
+    };
 
     cartDiv.appendChild(cartButton);
 
@@ -128,77 +135,89 @@ function showPImport(data) {
 
 function loadMoreItems() {
   // 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
-  loading_page.style.display = 'block';
+  loading_page.style.display = "block";
+  // 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
+  currentFPage += 1;
+  
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+  const hasSearchInput = searchInput.length > 0;
 
-  // 다음 페이지로 넘어갈 때마다 totalItems 값을 증가시킵니다.
-  currentIpage += 1;
+  const callback = (data) => {
+    showPFrozen(data);
+    loading_page.style.display = "none";
+  };
 
-  // 다음 페이지로 넘어갈 때마다 현재 정렬된 상태에 따라 데이터를 가져와서 보여줍니다.
   if (currentSort === "lowprice") {
-    loadlowpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+    loadlowpJSON(callback);
   } else if (currentSort === "highprice") {
-    loadhighpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+    loadhighpJSON(callback);
   } else if (currentSort === "highdc") {
-    loadhighdcJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+    loadhighdcJSON(callback);
   } else {
     // 정렬 없이 데이터를 로드할 경우
-    loadIpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+    if (hasSearchInput) {
+      loadselectJSON(callback);
+    } else {
+      loadFpJSON(callback);
+    }
   }
 }
 
-
-window.addEventListener('scroll', () => {
+window.addEventListener("scroll", () => {
   // 스크롤이 맨 아래에 도달하면 loadMoreItems 함수를 호출합니다.
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     loadMoreItems();
   }
 });
 
-function loadIpJSON(callback) {
-  $.getJSON(Ipath, function (data) {
-    jsonData = data; // 데이터 저장
-    callback(data);
-    dataloaded=true;
+function loadselectJSON(callback) {
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+
+  $.getJSON(Fpath, function (data) {
+    // Filter the data to only include items where `incategory` matches the search input
+    const selecteddata = data.filter(
+      (item) => item.name.toLowerCase().includes(searchInput)
+    );
+    callback(selecteddata); // Call the callback with the filtered data
   });
 }
 
-loadIpJSON(function (data) {
-  showPImport(data);
+function selectshow() {
+  if (dataloaded) {
+    dataloaded = false;
+    loading_page.style.display = "block"; // 로딩 화면 표시
+    fpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    setTimeout(function () {
+      loadselectJSON(function (data) {
+        showPFrozen(data);
+        loading_page.style.display = "none"; // 로딩 화면 숨김
+        dataloaded = true;
+      });
+    }, 500); // 0.5초의 지연 후 데이터 로딩
+  }
+}
+
+function loadFpJSON(callback) {
+  $.getJSON(Fpath, function (data) {
+    jsonData = data; // 데이터 저장
+    callback(data);
+    dataloaded = true;
+  });
+}
+
+loadFpJSON(function (data) {
+  showPFrozen(data);
 });
 
 function sortByPriceAscending(data) {
-  data.sort(function(a, b) {
+  data.sort(function (a, b) {
     return parseFloat(a.price) - parseFloat(b.price);
   });
   console.log("sortByPriceAscending");
 }
 
 function sortByPriceDescending(data) {
-  data.sort(function(a, b) {
+  data.sort(function (a, b) {
     return parseFloat(b.price) - parseFloat(a.price);
   });
   console.log("sortByPriceDescending");
@@ -214,15 +233,24 @@ function sortByDiscountDescending(data) {
 }
 
 function loadlowpJSON(callback) {
-  $.getJSON(Ipath, function (lowpdata) {
-    // price를 숫자로 변환하여 오름차순으로 정렬
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+
+  $.getJSON(Fpath, function (lowpdata) {
+    // Filter the data to only include items where `incategory` matches the search input
+    if (searchInput) {
+      lowpdata = lowpdata.filter(
+        (item) => item.name.toLowerCase().includes(searchInput)
+      );
+    }
+
+    // Price를 숫자로 변환하여 오름차순으로 정렬
     lowpdata.sort(function (a, b) {
       var priceA = parseInt(a.price.replace(/[^0-9]/g, ""), 10);
       var priceB = parseInt(b.price.replace(/[^0-9]/g, ""), 10);
       return priceA - priceB;
     });
 
-    lowpdata = lowpdata.filter(function(item) {
+    lowpdata = lowpdata.filter(function (item) {
       var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
       return price < 1000000 && price > 1000;
     });
@@ -230,19 +258,25 @@ function loadlowpJSON(callback) {
     callback(lowpdata);
   });
 }
-
 function loadhighpJSON(callback) {
-  $.getJSON(Ipath, function (highpdata) {
-    // price를 숫자로 변환하여 내림차순으로 정렬
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+
+  $.getJSON(Fpath, function (highpdata) {
+    // Filter the data to only include items where `incategory` matches the search input
+    if (searchInput) {
+      highpdata = highpdata.filter(
+        (item) => item.name.toLowerCase().includes(searchInput)
+      );
+    }
+
+    // Price를 숫자로 변환하여 오름차순으로 정렬
     highpdata.sort(function (a, b) {
       var priceA = parseInt(a.price.replace(/[^0-9]/g, ""), 10);
       var priceB = parseInt(b.price.replace(/[^0-9]/g, ""), 10);
-
-      return priceB - priceA;
+      return priceA - priceB;
     });
 
-    // 가격이 1,000,000 이상인 항목은 제거
-    highpdata = highpdata.filter(function(item) {
+    highpdata = highpdata.filter(function (item) {
       var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
       return price < 1000000 && price > 1000;
     });
@@ -252,28 +286,39 @@ function loadhighpJSON(callback) {
 }
 
 function loadhighdcJSON(callback) {
-  $.getJSON(Ipath, function (highdcdata) {
+  $.getJSON(Fpath, function (highdcdata) {
+    const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+
+    if (searchInput) {
+      highdcdata = highdcdata.filter(
+        (item) => item.name.toLowerCase().includes(searchInput)
+      );
+    }
+
     // Convert discount to a number and sort in descending order
     highdcdata.sort(function (a, b) {
       var discountA = parseInt(a.discount.replace(/[^0-9]/g, ""), 10);
       var discountB = parseInt(b.discount.replace(/[^0-9]/g, ""), 10);
       return discountB - discountA;
     });
+    highdcdata = highdcdata.filter(function (item) {
+      var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
+      return price < 1000000 && price > 1000;
+    });
     callback(highdcdata);
   });
 }
 
-
 function show() {
   if (dataloaded) {
-    dataloaded=false;
-    loading_page.style.display = 'block'; // 로딩 화면 표시
-    ipcontainer.innerHTML = ""; // 이전 데이터 삭제
-    setTimeout(function() {
-      loadIpJSON(function (data) {
-        showPImport(data);
-        loading_page.style.display = 'none'; // 로딩 화면 숨김
-        dataloaded=true;
+    dataloaded = false;
+    loading_page.style.display = "block"; // 로딩 화면 표시
+    fpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    setTimeout(function () {
+      loadFpJSON(function (data) {
+        showPFrozen(data);
+        loading_page.style.display = "none"; // 로딩 화면 숨김
+        dataloaded = true;
       });
     }, 500); // 0.5초의 지연 후 데이터 로딩
   }
@@ -282,52 +327,52 @@ function show() {
 function lowdata() {
   currentSort = "lowprice"; // 현재 정렬 상태 설정
   if (dataloaded) {
-    dataloaded=false;
-    loading_page.style.display = 'block'; // 로딩 화면 표시
-    ipcontainer.innerHTML = ""; // 이전 데이터 삭제
-    currentIpagepage = 1;
-    setTimeout(function() {
+    dataloaded = false;
+    loading_page.style.display = "block"; // 로딩 화면 표시
+    fpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    currentFpage = 1;
+    setTimeout(function () {
       loadlowpJSON(function (data) {
         sortByPriceAscending(data);
-        showPImport(data);
-        loading_page.style.display = 'none'; // 로딩 화면 숨김
-        dataloaded=true;
+        showPFrozen(data);
+        loading_page.style.display = "none"; // 로딩 화면 숨김
+        dataloaded = true;
       });
     }, 500); // 0.5초의 지연 후 데이터 로딩
   }
 }
 
-function highdata(){
+function highdata() {
   currentSort = "highprice"; // 현재 정렬 상태 설정
   if (dataloaded) {
-    dataloaded=false;
-    loading_page.style.display = 'block'; // 로딩 화면 표시
-    ipcontainer.innerHTML = ""; // 이전 데이터 삭제
-    currentIpage = 1;
-    setTimeout(function() {
+    dataloaded = false;
+    loading_page.style.display = "block"; // 로딩 화면 표시
+    fpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    currentFpage = 1;
+    setTimeout(function () {
       loadhighpJSON(function (data) {
         sortByPriceDescending(data);
-        showPImport(data);
-        loading_page.style.display = 'none'; // 로딩 화면 숨김
-        dataloaded=true;
+        showPFrozen(data);
+        loading_page.style.display = "none"; // 로딩 화면 숨김
+        dataloaded = true;
       });
     }, 500); // 0.5초의 지연 후 데이터 로딩
   }
 }
 
-function highdc(){
+function highdc() {
   currentSort = "highdc"; // 현재 정렬 상태 설정
   if (dataloaded) {
-    dataloaded=false;
-    loading_page.style.display = 'block'; // 로딩 화면 표시
-    ipcontainer.innerHTML = ""; // 이전 데이터 삭제
-    currentIpage = 1;
-    setTimeout(function() {
+    dataloaded = false;
+    loading_page.style.display = "block"; // 로딩 화면 표시
+    fpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    currentFpage = 1;
+    setTimeout(function () {
       loadhighdcJSON(function (data) {
         sortByDiscountDescending(data);
-        showPImport(data);
-        loading_page.style.display = 'none'; // 로딩 화면 숨김
-        dataloaded=true;
+        showPFrozen(data);
+        loading_page.style.display = "none"; // 로딩 화면 숨김
+        dataloaded = true;
       });
     }, 500); // 0.5초의 지연 후 데이터 로딩
   }

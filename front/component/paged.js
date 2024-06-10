@@ -171,6 +171,8 @@ window.addEventListener("scroll", () => {
   }
 });
 
+
+
 function loadselectJSON(callback) {
   const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
 
@@ -233,12 +235,14 @@ function sortByDiscountDescending(data) {
 }
 
 function loadlowpJSON(callback) {
-  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
 
   $.getJSON(Dpath, function (lowpdata) {
     // Filter the data to only include items where `incategory` matches the search input
     if (searchInput) {
-      lowpdata = lowpdata.filter(item => item.incategory.toLowerCase() === searchInput);
+      lowpdata = lowpdata.filter(
+        (item) => item.incategory.toLowerCase() === searchInput
+      );
     }
 
     // Price를 숫자로 변환하여 오름차순으로 정렬
@@ -258,12 +262,14 @@ function loadlowpJSON(callback) {
 }
 
 function loadhighpJSON(callback) {
-  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+  const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
 
   $.getJSON(Dpath, function (highpdata) {
     // Filter the data to only include items where `incategory` matches the search input
     if (searchInput) {
-      highpdata = highpdata.filter(item => item.incategory.toLowerCase() === searchInput);
+      highpdata = highpdata.filter(
+        (item) => item.incategory.toLowerCase() === searchInput
+      );
     }
 
     // Price를 숫자로 변환하여 오름차순으로 정렬
@@ -284,10 +290,12 @@ function loadhighpJSON(callback) {
 
 function loadhighdcJSON(callback) {
   $.getJSON(Dpath, function (highdcdata) {
-    const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+    const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
 
     if (searchInput) {
-      highdcdata = highdcdata.filter(item => item.incategory.toLowerCase() === searchInput);
+      highdcdata = highdcdata.filter(
+        (item) => item.incategory.toLowerCase() === searchInput
+      );
     }
 
     // Convert discount to a number and sort in descending order
@@ -309,6 +317,7 @@ function show() {
     dataloaded = false;
     loading_page.style.display = "block"; // 로딩 화면 표시
     dpcontainer.innerHTML = ""; // 이전 데이터 삭제
+    currentDPage = 1;
     setTimeout(function () {
       loadDpJSON(function (data) {
         showPDomestic(data);
@@ -373,4 +382,3 @@ function highdc() {
     }, 500); // 0.5초의 지연 후 데이터 로딩
   }
 }
-

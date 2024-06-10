@@ -127,47 +127,34 @@ function showPImport(data) {
 }
 
 function loadMoreItems() {
-  // 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
-  loading_page.style.display = 'block';
+// 스크롤 이벤트 발생 시 로딩 페이지 이미지 표시
+loading_page.style.display = "block";
 
-  // 다음 페이지로 넘어갈 때마다 totalItems 값을 증가시킵니다.
-  currentIpage += 1;
+// 다음 페이지로 넘어갈 때마다 currentDPage 값을 증가시킵니다.
+currentDPage += 1;
 
-  // 다음 페이지로 넘어갈 때마다 현재 정렬된 상태에 따라 데이터를 가져와서 보여줍니다.
-  if (currentSort === "lowprice") {
-    loadlowpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
-  } else if (currentSort === "highprice") {
-    loadhighpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
-  } else if (currentSort === "highdc") {
-    loadhighdcJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+const searchInput = document.getElementById("nav").value.toLowerCase(); // Get the search input value
+const hasSearchInput = searchInput.length > 0;
+
+const callback = (data) => {
+  showPImport(data);
+  loading_page.style.display = "none";
+};
+
+if (currentSort === "lowprice") {
+  loadlowpJSON(callback);
+} else if (currentSort === "highprice") {
+  loadhighpJSON(callback);
+} else if (currentSort === "highdc") {
+  loadhighdcJSON(callback);
+} else {
+  // 정렬 없이 데이터를 로드할 경우
+  if (hasSearchInput) {
+    loadselectJSON(callback);
   } else {
-    // 정렬 없이 데이터를 로드할 경우
-    loadIpJSON(function(data) {
-      // 데이터 로딩 완료 후 로딩 페이지 이미지 숨김
-      setTimeout(() => {
-        showPImport(data);
-        loading_page.style.display = 'none';
-      }, 100); // 0.1초의 지연 후 데이터 로딩
-    });
+    loadIpJSON(callback);
   }
+}
 }
 
 
@@ -177,6 +164,30 @@ window.addEventListener('scroll', () => {
     loadMoreItems();
   }
 });
+
+function loadselectJSON(callback) {
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
+  $.getJSON(Ipath, function (data) {
+    // Filter the data to only include items where `incategory` matches the search input
+    const selecteddata = data.filter(item => item.incategory.toLowerCase() === searchInput);
+    callback(selecteddata); // Call the callback with the filtered data
+  });
+}
+function selectshow() {
+  if (dataloaded) {
+    dataloaded = false;
+    loading_page.style.display = 'block'; // 로딩 화면 표시
+    ipcontainer.innerHTML = ""; // 이전 데이터 삭제
+    setTimeout(function() {
+      loadselectJSON(function (data) {
+        showPImport(data);
+        loading_page.style.display = 'none'; // 로딩 화면 숨김
+        dataloaded = true;
+      });
+    }, 500); // 0.5초의 지연 후 데이터 로딩
+  }
+}
 
 function loadIpJSON(callback) {
   $.getJSON(Ipath, function (data) {
@@ -214,15 +225,22 @@ function sortByDiscountDescending(data) {
 }
 
 function loadlowpJSON(callback) {
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
   $.getJSON(Ipath, function (lowpdata) {
-    // price를 숫자로 변환하여 오름차순으로 정렬
+    // Filter the data to only include items where `incategory` matches the search input
+    if (searchInput) {
+      lowpdata = lowpdata.filter(item => item.incategory.toLowerCase() === searchInput);
+    }
+
+    // Price를 숫자로 변환하여 오름차순으로 정렬
     lowpdata.sort(function (a, b) {
       var priceA = parseInt(a.price.replace(/[^0-9]/g, ""), 10);
       var priceB = parseInt(b.price.replace(/[^0-9]/g, ""), 10);
       return priceA - priceB;
     });
 
-    lowpdata = lowpdata.filter(function(item) {
+    lowpdata = lowpdata.filter(function (item) {
       var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
       return price < 1000000 && price > 1000;
     });
@@ -232,17 +250,22 @@ function loadlowpJSON(callback) {
 }
 
 function loadhighpJSON(callback) {
+  const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
   $.getJSON(Ipath, function (highpdata) {
-    // price를 숫자로 변환하여 내림차순으로 정렬
+    // Filter the data to only include items where `incategory` matches the search input
+    if (searchInput) {
+      highpdata = highpdata.filter(item => item.incategory.toLowerCase() === searchInput);
+    }
+
+    // Price를 숫자로 변환하여 오름차순으로 정렬
     highpdata.sort(function (a, b) {
       var priceA = parseInt(a.price.replace(/[^0-9]/g, ""), 10);
       var priceB = parseInt(b.price.replace(/[^0-9]/g, ""), 10);
-
-      return priceB - priceA;
+      return priceA - priceB;
     });
 
-    // 가격이 1,000,000 이상인 항목은 제거
-    highpdata = highpdata.filter(function(item) {
+    highpdata = highpdata.filter(function (item) {
       var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
       return price < 1000000 && price > 1000;
     });
@@ -253,11 +276,21 @@ function loadhighpJSON(callback) {
 
 function loadhighdcJSON(callback) {
   $.getJSON(Ipath, function (highdcdata) {
+    const searchInput = document.getElementById('nav').value.toLowerCase(); // Get the search input value
+
+    if (searchInput) {
+      highdcdata = highdcdata.filter(item => item.incategory.toLowerCase() === searchInput);
+    }
+
     // Convert discount to a number and sort in descending order
     highdcdata.sort(function (a, b) {
       var discountA = parseInt(a.discount.replace(/[^0-9]/g, ""), 10);
       var discountB = parseInt(b.discount.replace(/[^0-9]/g, ""), 10);
       return discountB - discountA;
+    });
+    highdcdata = highdcdata.filter(function (item) {
+      var price = parseInt(item.price.replace(/[^0-9]/g, ""), 10);
+      return price < 1000000 && price > 1000;
     });
     callback(highdcdata);
   });
